@@ -39,20 +39,6 @@ export default {
   name: 'HomeView',
   data () {
     return {
-      items: [
-        {
-          src: 'https://cdn.vuetifyjs.com/images/carousel/squirrel.jpg'
-        },
-        {
-          src: 'https://cdn.vuetifyjs.com/images/carousel/sky.jpg'
-        },
-        {
-          src: 'https://cdn.vuetifyjs.com/images/carousel/bird.jpg'
-        },
-        {
-          src: 'https://cdn.vuetifyjs.com/images/carousel/planet.jpg'
-        }
-      ],
       responses: null,
       gradient: 'rgba(0, 0, 0, .5), rgba(0, 0, 0, .7)'
     }

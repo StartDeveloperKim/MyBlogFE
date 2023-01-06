@@ -20,24 +20,22 @@
 
     <v-list>
       <v-list-group
-        v-for="item in items"
-        :key="item.title"
-        v-model="item.active"
-        :prepend-icon="item.action"
+        v-for="category in categories"
+        :key="category.name"
         no-action
       >
         <template v-slot:activator>
           <v-list-item-content>
-            <v-list-item-title v-text="item.title"></v-list-item-title>
+            <v-list-item-title>{{ category.name }}({{ category.categoryNum }})</v-list-item-title>
           </v-list-item-content>
         </template>
 
         <v-list-item
-          v-for="child in item.items"
-          :key="child.title"
+          v-for="child in category.childCategory"
+          :key="child.name"
         >
           <v-list-item-content>
-            <v-list-item-title v-text="child.title"></v-list-item-title>
+            <v-list-item-title>{{ child.name }}({{ child.categoryNum }})</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list-group>
@@ -48,49 +46,22 @@
 export default {
   name: 'SidebarView',
   data: () => ({
-    items: [
-      {
-        action: 'mdi-ticket',
-        items: [{ title: 'List Item' }],
-        title: 'Attractions'
-      },
-      {
-        action: 'mdi-silverware-fork-knife',
-        active: true,
-        items: [
-          { title: 'Breakfast & brunch' },
-          { title: 'New American' },
-          { title: 'Sushi' }
-        ],
-        title: 'Dining'
-      },
-      {
-        action: 'mdi-school',
-        items: [{ title: 'List Item' }],
-        title: 'Education'
-      },
-      {
-        action: 'mdi-human-male-female-child',
-        items: [{ title: 'List Item' }],
-        title: 'Family'
-      },
-      {
-        action: 'mdi-bottle-tonic-plus',
-        items: [{ title: 'List Item' }],
-        title: 'Health'
-      },
-      {
-        action: 'mdi-briefcase',
-        items: [{ title: 'List Item' }],
-        title: 'Office'
-      },
-      {
-        action: 'mdi-tag',
-        items: [{ title: 'List Item' }],
-        title: 'Promotions'
-      }
-    ]
-  })
+    categories: null
+  }),
+  methods: {
+    getCategories: function () {
+      this.$axios({
+        method: 'GET',
+        url: 'http://localhost:3805/category'
+      }).then((response) => {
+        this.categories = response.data
+        console.log(response.data)
+      })
+    }
+  },
+  created () {
+    this.getCategories()
+  }
 }
 </script>
 <style lang="">
