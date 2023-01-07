@@ -1,12 +1,52 @@
 <template>
-  <v-container>
-    <v-app-bar class="mt-3" rounded="pill" extension-height="50%" fixed app>
+  <v-container class="justify-center">
+    <v-app-bar class="mt-3" rounded="pill" extension-height="50%" app>
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
         <v-app-bar-title class="text-h4 font-weight-bold">꾸준함이 목표인 BLOG</v-app-bar-title>
         <v-spacer />
-        <v-btn icon>
-          <v-icon>mdi-dots-vertical</v-icon>
-        </v-btn>
+        <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon @click="dialog=!dialog">
+                <v-icon
+                color="primary"
+                large
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-login
+                </v-icon>
+              </v-btn>
+            </template>
+            <span>로그인</span>
+        </v-tooltip>
+        <v-dialog v-model="dialog" width="500">
+          <v-card>
+            <v-card-title class="text-h6 grey lighten-2 font-weight-bold">
+              로그인
+            </v-card-title>
+            <v-card-text>
+              <v-row>
+                <v-col cols=6>
+                  <v-btn id="google" @click="login('google')" color="red" class="ma-2 white--text font-weight-bold">
+                      <v-icon>
+                        mdi-google
+                      </v-icon>
+                      .Google
+                    </v-btn>
+                </v-col>
+                <v-col cols=6>
+                  <v-btn id="naver" @click="login('naver')" color="green" class="ma-2 white--text font-weight-bold">
+                      <v-icon x-large>
+                        mdi-alpha-n
+                      </v-icon>
+                      Naver
+                    </v-btn>
+                </v-col>
+              </v-row>
+            </v-card-text>
+            <v-divider></v-divider>
+          </v-card>
+        </v-dialog>
       </v-app-bar>
 
       <v-navigation-drawer v-model="drawer" app>
@@ -23,8 +63,14 @@ export default {
     SidebarView
   },
   data: () => ({
-    drawer: false
-  })
+    drawer: false,
+    dialog: false
+  }),
+  methods: {
+    login (server) {
+      window.location.href = 'http://localhost:3805/oauth2/authorization/' + server
+    }
+  }
 }
 </script>
 <style lang="">

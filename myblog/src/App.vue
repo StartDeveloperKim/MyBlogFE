@@ -25,4 +25,7 @@ export default {
   background: url('../src/assets/backgroundImg.png');
   background-size: cover;
 }
+a {
+  text-decoration: none;
+}
 </style>

@@ -14,10 +14,8 @@
             outlined
             label="검색"
             append-icon="mdi-map-marker"
-            class="pt-4"
+            class="mt-5"
           ></v-text-field>
-    <v-divider/>
-
     <v-list>
       <v-list-group
         v-for="category in categories"
@@ -26,7 +24,7 @@
       >
         <template v-slot:activator>
           <v-list-item-content>
-            <v-list-item-title>{{ category.name }}({{ category.categoryNum }})</v-list-item-title>
+            <v-list-item-title class="text-h6 font-weight-bold">{{ category.name }}({{ category.categoryNum }})</v-list-item-title>
           </v-list-item-content>
         </template>
 
@@ -35,11 +33,13 @@
           :key="child.name"
         >
           <v-list-item-content>
-            <v-list-item-title>{{ child.name }}({{ child.categoryNum }})</v-list-item-title>
+            <v-list-item-title class="font-weight-bold">{{ child.name }}({{ child.categoryNum }})</v-list-item-title>
           </v-list-item-content>
         </v-list-item>
       </v-list-group>
     </v-list>
+
+    <v-divider/>
   </v-container>
 </template>
 <script>
