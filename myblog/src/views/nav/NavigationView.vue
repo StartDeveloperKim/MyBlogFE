@@ -2,7 +2,9 @@
   <v-container class="justify-center">
     <v-app-bar class="mt-3" rounded="pill" extension-height="50%" app>
         <v-app-bar-nav-icon @click="drawer = !drawer"></v-app-bar-nav-icon>
-        <v-app-bar-title class="text-h4 font-weight-bold">꾸준함이 목표인 BLOG</v-app-bar-title>
+        <router-link to="/" class="black--text">
+          <v-app-bar-title class="text-h4 font-weight-bold">꾸준함이 목표인 BLOG</v-app-bar-title>
+        </router-link>
         <v-spacer />
         <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
@@ -68,11 +70,11 @@ export default {
   }),
   methods: {
     login (server) {
-      window.location.href = 'http://localhost:3805/oauth2/authorization/' + server
+      window.location.href = 'http://localhost:8080/oauth2/authorization/' + server
     }
   }
 }
 </script>
-<style lang="">
+<style>
 
 </style>

@@ -40,7 +40,7 @@ export default {
     getBoard: function () {
       this.$axios({
         method: 'GET',
-        url: 'http://localhost:3805/board/' + this.id
+        url: 'http://localhost:8080/board/' + this.id
       }).then((response) => {
         this.title = response.data.title
         this.content = response.data.content

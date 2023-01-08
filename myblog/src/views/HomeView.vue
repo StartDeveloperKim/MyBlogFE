@@ -64,7 +64,7 @@ export default {
     getBoards: function () {
       this.$axios({
         method: 'GET',
-        url: 'http://localhost:3805/'
+        url: 'http://localhost:8080/'
       }).then((response) => {
         this.responses = response.data
       })

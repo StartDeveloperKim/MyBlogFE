@@ -13,9 +13,16 @@ const routes = [
     component: HomeView
   },
   {
-    path: '/board',
+    path: '/board/:parentCategory/:page/:step',
     name: 'BoardListView',
-    component: BoardListView
+    component: BoardListView,
+    props: true
+  },
+  {
+    path: '/board/:parentCategory/:childCategory/:page/:step',
+    name: 'BoardListView',
+    component: BoardListView,
+    props: true
   },
   {
     path: '/board/:id',

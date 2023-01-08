@@ -24,7 +24,9 @@
       >
         <template v-slot:activator>
           <v-list-item-content>
-            <v-list-item-title class="text-h6 font-weight-bold">{{ category.name }}({{ category.categoryNum }})</v-list-item-title>
+            <router-link :to="'/board/'+ category.name +'/1/1'" class="black--text">
+              <v-list-item-title class="text-h6 font-weight-bold">{{ category.name }}({{ category.categoryNum }})</v-list-item-title>
+            </router-link>
           </v-list-item-content>
         </template>
 
@@ -33,7 +35,9 @@
           :key="child.name"
         >
           <v-list-item-content>
-            <v-list-item-title class="font-weight-bold">{{ child.name }}({{ child.categoryNum }})</v-list-item-title>
+            <router-link :to="'/board/' + category.name + '/' + child.name + '/1/2'" class="black--text">
+              <v-list-item-title class="font-weight-bold">{{ child.name }}({{ child.categoryNum }})</v-list-item-title>
+            </router-link>
           </v-list-item-content>
         </v-list-item>
       </v-list-group>
@@ -43,6 +47,7 @@
   </v-container>
 </template>
 <script>
+
 export default {
   name: 'SidebarView',
   data: () => ({
@@ -52,7 +57,7 @@ export default {
     getCategories: function () {
       this.$axios({
         method: 'GET',
-        url: 'http://localhost:3805/category'
+        url: 'http://localhost:8080/category'
       }).then((response) => {
         this.categories = response.data
         console.log(response.data)
@@ -64,6 +69,6 @@ export default {
   }
 }
 </script>
-<style lang="">
+<style>
 
 </style>
