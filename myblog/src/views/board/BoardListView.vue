@@ -24,20 +24,34 @@
         </v-card>
       </router-link>
     </v-hover>
-    <PagingView></PagingView>
+    <div class="text-center">
+      <v-container>
+        <v-row justify="center">
+          <v-col cols="8">
+            <v-container class="max-width">
+              <v-pagination
+                v-model="currentPage"
+                :length="pageInfo.realEndPage"
+                :total-visible="7"
+                @input="pageChanged"
+              ></v-pagination>
+            </v-container>
+          </v-col>
+        </v-row>
+      </v-container>
+    </div>
   </v-container>
 </template>
 <script>
-import PagingView from '../board/PagingView.vue'
 
 export default {
   name: 'BoardDetailView',
   props: ['parentCategory', 'childCategory', 'page', 'step'],
-  components: { PagingView },
   data () {
     return {
       boards: [],
-      paging: this.page,
+      papeInfo: null,
+      currentPage: this.page,
       pCategory: this.parentCategory
     }
   },
@@ -45,16 +59,22 @@ export default {
     getBoardList: function () {
       let url
       if (typeof this.childCategory === 'undefined') {
-        url = this.parentCategory + '/' + this.page + '/' + this.step
+        url = this.parentCategory + '/' + this.currentPage + '/' + this.step
       } else {
-        url = this.parentCategory + '/' + this.childCategory + '/' + this.page + '/' + this.step
+        url = this.parentCategory + '/' + this.childCategory + '/' + this.currentPage + '/' + this.step
       }
       this.$axios({
         method: 'GET',
         url: 'http://localhost:8080/board/' + url
       }).then((response) => {
-        this.boards = response.data
+        console.log(response.data)
+        this.boards = response.data.boards
+        this.pageInfo = response.data.pageInfo
       })
+    },
+    pageChanged (newPage) {
+      this.currentPage = newPage
+      this.getBoardList()
     }
   },
   created () {
