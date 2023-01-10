@@ -7,7 +7,7 @@
           {{ createDate }}.
           <!-- 나중에 권한에 따른 수정 및 삭제 여부를 구현하자. -->
           <router-link :to="'/board/new/'+this.id" class="white--text">수정. </router-link>
-          <v-a @click="removeBoard" class="white-text">삭제</v-a>
+          <a @click="removeBoard" class="white--text">삭제</a>
         </v-card-subtitle>
       </v-img>
       <v-card-text>

@@ -19,7 +19,24 @@
                 </v-icon>
               </v-btn>
             </template>
-            <span>로그인</span>
+            <span class="font-weight-bold">로그인</span>
+        </v-tooltip>
+        <v-tooltip bottom>
+          <template v-slot:activator="{ on, attrs }">
+            <router-link to="/edit">
+              <v-btn
+              class="ma-2"
+              outlined
+              fab
+              color="indigo"
+              v-bind="attrs"
+              v-on="on"
+              >
+              <v-icon>mdi-pencil</v-icon>
+            </v-btn>
+            </router-link>
+          </template>
+          <span class="font-weight-bold">글 쓰기</span>
         </v-tooltip>
         <v-dialog v-model="dialog" width="500">
           <v-card>

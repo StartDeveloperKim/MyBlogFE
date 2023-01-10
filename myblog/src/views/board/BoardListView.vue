@@ -31,7 +31,7 @@
             <v-container class="max-width">
               <v-pagination
                 v-model="currentPage"
-                :length="pageInfo.realEndPage"
+                :length="endPage"
                 :total-visible="7"
                 @input="pageChanged"
               ></v-pagination>
@@ -50,9 +50,10 @@ export default {
   data () {
     return {
       boards: [],
-      papeInfo: null,
-      currentPage: this.page,
-      pCategory: this.parentCategory
+      pageInfo: null,
+      currentPage: 1,
+      pCategory: this.parentCategory,
+      endPage: null
     }
   },
   methods: {
@@ -70,6 +71,7 @@ export default {
         console.log(response.data)
         this.boards = response.data.boards
         this.pageInfo = response.data.pageInfo
+        this.endPage = this.pageInfo.realEndPage
       })
     },
     pageChanged (newPage) {

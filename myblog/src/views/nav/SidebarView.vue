@@ -16,6 +16,19 @@
             append-icon="mdi-map-marker"
             class="mt-5"
           ></v-text-field>
+
+    <v-divider />
+
+    <v-container>
+      <v-row justify="center">
+        <v-col align-self="center" cols="10">
+          카테고리 수정
+        </v-col>
+      </v-row>
+    </v-container>
+
+    <v-divider />
+
     <v-list>
       <v-list-group
         v-for="category in categories"

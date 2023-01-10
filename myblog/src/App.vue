@@ -1,19 +1,10 @@
 <template>
-  <v-app>
-    <NavigationView/>
-    <v-main>
-      <router-view/>
-    </v-main>
-  </v-app>
+  <router-view/>
 </template>
 
 <script>
-import NavigationView from './views/nav/NavigationView.vue'
 export default {
   name: 'App',
-  components: {
-    NavigationView
-  },
   data: () => ({
     //
   })
