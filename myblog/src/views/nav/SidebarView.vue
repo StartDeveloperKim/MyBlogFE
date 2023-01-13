@@ -10,11 +10,15 @@
 
     <v-divider/>
 
+    <router-link :to="searchLink">
+    </router-link>
     <v-text-field
             outlined
             label="검색"
             append-icon="mdi-map-marker"
             class="mt-5"
+            v-model="searchKeyword"
+            @keyup.enter="search"
           ></v-text-field>
 
     <v-divider />
@@ -64,17 +68,29 @@
 export default {
   name: 'SidebarView',
   data: () => ({
-    categories: null
+    categories: null,
+    url: 'http://localhost:8080',
+    searchKeyword: '',
+    searchLink: '/board/search?page=1&query='
   }),
   methods: {
     getCategories: function () {
       this.$axios({
         method: 'GET',
-        url: 'http://localhost:8080/category'
+        url: this.url + '/category'
       }).then((response) => {
         this.categories = response.data
         console.log(response.data)
       })
+    },
+    search () {
+      if (this.searchKeyword === '') {
+        alert('검색어를 입력해주세요')
+      } else {
+        const link = this.searchLink + this.searchKeyword
+        this.searchKeyword = ''
+        this.$router.push(link)
+      }
     }
   },
   created () {

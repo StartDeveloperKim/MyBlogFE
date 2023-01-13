@@ -5,6 +5,7 @@ import BoardDetailView from '../views/board/BoardDetailView.vue'
 import BoardListView from '../views/board/BoardListView.vue'
 import TotalView from '../views/board/TotalView.vue'
 import BoardEditView from '../views/board/BoardEditView.vue'
+import BoardSearchView from '../views/board/BoardSearchView.vue'
 
 Vue.use(VueRouter)
 
@@ -31,6 +32,10 @@ const routes = [
         props: true
       },
       {
+        path: 'board/search/',
+        component: BoardSearchView
+      },
+      {
         path: 'board/:id',
         name: 'BoardDetailView',
         component: BoardDetailView,
@@ -43,25 +48,6 @@ const routes = [
     component: BoardEditView
   }
 ]
-
-// {
-//   path: '/board/:parentCategory/:page/:step',
-//   name: 'BoardListView',
-//   component: BoardListView,
-//   props: true
-// },
-// {
-//   path: '/board/:parentCategory/:childCategory/:page/:step',
-//   name: 'BoardListView',
-//   component: BoardListView,
-//   props: true
-// },
-// {
-//   path: '/board/:id',
-//   name: 'BoardDetailView',
-//   component: BoardDetailView,
-//   props: true
-// }
 
 const router = new VueRouter({
   mode: 'history',
