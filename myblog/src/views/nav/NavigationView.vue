@@ -27,8 +27,7 @@
               <v-btn
               class="ma-2"
               outlined
-              fab
-              color="indigo"
+              color="blue"
               v-bind="attrs"
               v-on="on"
               >
