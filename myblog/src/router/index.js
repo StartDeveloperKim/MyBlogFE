@@ -6,6 +6,7 @@ import BoardListView from '../views/board/BoardListView.vue'
 import TotalView from '../views/board/TotalView.vue'
 import BoardEditView from '../views/board/BoardEditView.vue'
 import BoardSearchView from '../views/board/BoardSearchView.vue'
+import SocialLogin from '../views/login/SocialLogin.vue'
 
 Vue.use(VueRouter)
 
@@ -46,6 +47,10 @@ const routes = [
   {
     path: '/edit',
     component: BoardEditView
+  },
+  {
+    path: '/login',
+    component: SocialLogin
   }
 ]
 

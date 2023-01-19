@@ -8,7 +8,7 @@
         <v-spacer />
         <v-tooltip bottom>
             <template v-slot:activator="{ on, attrs }">
-              <v-btn icon @click="dialog=!dialog">
+              <v-btn icon @click="dialog=!dialog" v-if="checkToken()">
                 <v-icon
                 color="primary"
                 large
@@ -82,11 +82,18 @@ export default {
   },
   data: () => ({
     drawer: false,
-    dialog: false
+    dialog: false,
+    BASE_URL: 'http://localhost:8080'
   }),
   methods: {
     login (server) {
-      window.location.href = 'http://localhost:8080/oauth2/authorization/' + server
+      window.location.href = this.BASE_URL + '/oauth2/authorization/' + server + '?redirect_url=' + window.location.origin
+    },
+    checkToken () {
+      // token이 없다면 로그인 표시가 떠야한다.
+      const result = localStorage.getItem('token')
+      console.log('token : ' + result)
+      return result == null
     }
   }
 }
