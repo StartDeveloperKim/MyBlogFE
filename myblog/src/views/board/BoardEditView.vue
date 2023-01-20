@@ -44,7 +44,7 @@
         </div>
         <v-row>
           <v-col cols="12">
-            <ToastEditor ref="toastuiEditor" class="toast-editor-backgroud"/>
+            <div id="editor" ref="toastEditor" class="toast-editor-backgroud"/>
           </v-col>
         </v-row>
         <div class="mt-5">
@@ -57,16 +57,57 @@
 </template>
 <script>
 import '@toast-ui/editor/dist/toastui-editor.css'
-import ToastEditor from '../editor/ToastEditor.vue'
+import { Editor } from '@toast-ui/editor'
 import Tagify from 'tagify-vue'
 
 export default {
   components: {
-    ToastEditor, Tagify
+    Tagify
+  },
+  mounted () {
+    this.editor = new Editor({
+      el: document.querySelector('#editor'),
+      initialEditType: 'markdown',
+      previewStyle: 'vertical',
+      height: '400px',
+      hooks: {
+        addImageBlobHook: this.addImageBlobHook
+      }
+    })
   },
   methods: {
+    async addImageBlobHook (file, setText, type) {
+      try {
+        if (!file) return false
+
+        if (file && file.size > 5242880) {
+          // const size = (file.size / (1000 * 1000).toFixed(1))
+          alert('최대 업로드 사이즈(5MB)를 초과 하였습니다.')
+          return false
+        }
+
+        const formData = new FormData()
+        formData.append('image', file)
+
+        this.$axios.post(this.url + '/toast', formData, {
+          headers: {
+            'Content-type': 'multipart/form-data',
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
+        })
+          .then((response) => {
+            const imageURL = response.data
+            console.log(imageURL)
+            setText(imageURL, 'image')
+            return imageURL
+          })
+      } catch (e) {
+        alert('파일 업로드에 실패하였습니다.')
+      }
+    },
+
     save () {
-      const content = this.$refs.toastuiEditor.invoke('getHTML')
+      const content = this.editor.getHTML()
       const title = this.title
       const tags = this.tags
       const categoryId = this.categoryId
@@ -85,29 +126,35 @@ export default {
         thumbnail: thumbnail,
         tags: tags
       }
-      const config = {
+
+      this.$axios.post(this.url, JSON.stringify(requestData), {
         headers: {
-          'Content-Type': 'application/json'
+          'Content-type': 'application/json',
+          Authorization: 'Bearer ' + localStorage.getItem('token')
         }
-      }
-      alert(tags)
-      this.$axios.post(this.url, requestData, config)
+      })
         .then((response) => {
-          window.location.href = this.url + '/' + response.data
+          window.location.href = this.redirectUrl + '/board/' + response.data
         })
         .catch(error => {
-          alert(error)
+          alert('에러 발생!!' + error)
         })
     },
+
     cancel () {
       if (confirm('작성 중인 글이 저장되지 않았을 수도 있습니다.')) {
         window.history.back()
       }
     },
+
     getBoardEditViewInfo () {
+      const headers = {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
       this.$axios({
         method: 'GET',
-        url: this.url + '/edit'
+        url: this.url + '/edit',
+        headers
       }).then((response) => {
         this.temporalBoard = response.data.temporalBoardResp
         if (this.temporalBoard !== null) {
@@ -118,6 +165,7 @@ export default {
         }
       })
     },
+
     async thumbnailUpload (file) {
       const formData = new FormData()
       formData.append('img', file)
@@ -131,6 +179,7 @@ export default {
     }
   },
   data: () => ({
+    editor: null,
     titleRules: [
       value => !!value || '제목을 입력해주세요.'
     ],
@@ -143,7 +192,18 @@ export default {
     title: null,
     categoryId: null,
     thumbnail: null,
-    url: 'http://localhost:8080/board'
+    url: 'http://localhost:8080/board',
+    redirectUrl: 'http://localhost:8077',
+    editorOptions: {
+      initialEditType: 'markdown',
+      previewStyle: 'vertical',
+      height: '500px',
+      hooks: {
+        addImageBlobHook: (blob, callback) => {
+          this.addImageBlobHook(blob, callback)
+        }
+      }
+    }
   }),
   created () {
     this.getBoardEditViewInfo()

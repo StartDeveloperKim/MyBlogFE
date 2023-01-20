@@ -64,9 +64,14 @@ export default {
       } else {
         url = this.parentCategory + '/' + this.childCategory + '/' + this.currentPage + '/' + this.step
       }
+
+      const headers = {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
       this.$axios({
         method: 'GET',
-        url: 'http://localhost:8080/board/' + url
+        url: 'http://localhost:8080/board/' + url,
+        headers
       }).then((response) => {
         console.log(response.data)
         this.boards = response.data.boards

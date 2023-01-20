@@ -1,8 +1,8 @@
 <template>
-  <div id="editor"/>
+  <div id="editor" ref="toastEditor"/>
 </template>
 <script>
-import Editor from '@toast-ui/editor'
+import { Editor } from '@toast-ui/editor'
 
 export default {
   data () {
@@ -35,7 +35,10 @@ export default {
 
         const formData = new FormData()
         formData.append('image', file)
-        this.$axios.post(this.url + '/toast', formData)
+        const headers = {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+        this.$axios.post(this.url + '/toast', formData, headers)
           .then((response) => {
             const imageURL = response.data
             console.log(imageURL)
@@ -44,6 +47,9 @@ export default {
       } catch (e) {
         alert('파일 업로드에 실패하였습니다.')
       }
+    },
+    contentUpdate (e) {
+      this.$emit('contentUpdate', this.content)
     }
   }
 }

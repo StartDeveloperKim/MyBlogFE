@@ -68,7 +68,11 @@ export default {
       alert(this.comment)
     },
     getComments () {
-      this.$axios.get(this.url + this.$route.params.id)
+      this.$axios.get(this.url + this.$route.params.id, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      })
         .then((response) => {
           this.comments = response.data.comments
           this.total = response.data.total

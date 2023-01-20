@@ -38,9 +38,13 @@ export default {
   },
   methods: {
     getBoard: function () {
+      const headers = {
+        Authorization: 'Bearer ' + localStorage.getItem('token')
+      }
       this.$axios({
         method: 'GET',
-        url: 'http://localhost:8080/board/' + this.id
+        url: 'http://localhost:8080/board/' + this.id,
+        headers
       }).then((response) => {
         this.title = response.data.title
         this.content = response.data.content
