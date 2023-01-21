@@ -18,8 +18,10 @@ export default {
     },
     checkToken () {
       const token = this.getUrlParameter('token')
+      const role = this.getUrlParameter('role')
       if (token) {
         // this.$store.commit('setToken', token)
+        localStorage.setItem('role', role)
         localStorage.setItem('token', token)
         window.location.href = '/'
       } else {

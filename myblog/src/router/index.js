@@ -10,6 +10,17 @@ import SocialLogin from '../views/login/SocialLogin.vue'
 
 Vue.use(VueRouter)
 
+const requireAuth = () => (from, to, next) => {
+  const token = localStorage.getItem('token')
+  const role = localStorage.getItem('role')
+  if (token && role === 'ROLE_ADMIN') {
+    return next()
+  } else {
+    alert('접근 권한이 없습니다.')
+    next('/')
+  }
+}
+
 const routes = [
   {
     path: '/',
@@ -46,7 +57,8 @@ const routes = [
   },
   {
     path: '/edit',
-    component: BoardEditView
+    component: BoardEditView,
+    beforeEnter: requireAuth()
   },
   {
     path: '/login',

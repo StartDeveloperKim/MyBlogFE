@@ -21,9 +21,26 @@
             </template>
             <span class="font-weight-bold">로그인</span>
         </v-tooltip>
+
+        <v-tooltip bottom>
+            <template v-slot:activator="{ on, attrs }">
+              <v-btn icon @click="logout()" v-if="!checkToken()">
+                <v-icon
+                color="error"
+                large
+                v-bind="attrs"
+                v-on="on"
+              >
+                mdi-logout
+                </v-icon>
+              </v-btn>
+            </template>
+            <span class="font-weight-bold">로그아웃</span>
+        </v-tooltip>
+
         <v-tooltip bottom>
           <template v-slot:activator="{ on, attrs }">
-            <router-link to="/edit">
+            <router-link to="/edit" v-if="checkRole()">
               <v-btn
               class="ma-2"
               outlined
@@ -89,11 +106,19 @@ export default {
     login (server) {
       window.location.href = this.BASE_URL + '/oauth2/authorization/' + server + '?redirect_url=' + window.location.origin
     },
+    logout () {
+      localStorage.removeItem('token')
+      localStorage.removeItem('role')
+      window.location.href = '/'
+    },
     checkToken () {
       // token이 없다면 로그인 표시가 떠야한다.
-      const result = localStorage.getItem('token')
-      console.log('token : ' + result)
-      return result == null
+      const token = localStorage.getItem('token')
+      return token == null
+    },
+    checkRole () {
+      const role = localStorage.getItem('role')
+      return role === 'ROLE_ADMIN'
     }
   }
 }

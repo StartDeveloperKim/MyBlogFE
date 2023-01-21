@@ -80,7 +80,6 @@ export default {
         url: this.url + '/category'
       }).then((response) => {
         this.categories = response.data
-        console.log(response.data)
       })
     },
     search () {

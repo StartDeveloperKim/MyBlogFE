@@ -5,21 +5,24 @@ Vue.use(Vuex)
 
 export default new Vuex.Store({
   state: {
-    token: null
+    role: null
   },
   getters: {
-    isLogin (state) {
-      return state.token == null
+    isAdmin (state) {
+      return state.role === 'ROLE_ADMIN'
+    },
+    isGuest (state) {
+      return state.role === 'ROLE_GUEST'
     }
   },
   mutations: {
-    setToken (state, _token) {
-      state.token = _token
+    setRole (state, _role) {
+      state.role = _role
     }
   },
   actions: {
-    setToken: ({ commit }, _token) => {
-      commit('setToken', _token)
+    setRole: ({ commit }, _role) => {
+      commit('setRole', _role)
     }
   },
   modules: {

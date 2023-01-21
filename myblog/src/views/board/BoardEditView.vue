@@ -163,6 +163,9 @@ export default {
           this.categoryList = response.data.categoryList
           console.log(this.categoryList)
         }
+      }).catch((Error) => {
+        alert('접근 궈한이 없습니다.')
+        history.back()
       })
     },
 
