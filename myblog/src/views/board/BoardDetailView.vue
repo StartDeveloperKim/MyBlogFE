@@ -6,8 +6,8 @@
         <v-card-subtitle class="white--text mt-1">
           {{ createDate }}.
           <!-- 나중에 권한에 따른 수정 및 삭제 여부를 구현하자. -->
-          <router-link :to="'/board/new/'+this.id" class="white--text">수정. </router-link>
-          <a @click="removeBoard" class="white--text">삭제</a>
+          <router-link :to="'/edit/'+this.$route.params.id" class="white--text" v-if="this.modify">수정. </router-link>
+          <a @click="removeBoard" class="white--text" v-if="this.modify">삭제</a>
         </v-card-subtitle>
       </v-img>
       <v-card-text>
@@ -32,8 +32,10 @@ export default {
       content: '',
       thumbnail: '',
       createDate: '',
+      modify: null,
       viewer: null,
-      gradient: 'rgba(0, 0, 0, .5), rgba(0, 0, 0, .7)'
+      gradient: 'rgba(0, 0, 0, .5), rgba(0, 0, 0, .7)',
+      url: 'http://localhost:8080/board/'
     }
   },
   methods: {
@@ -43,18 +45,36 @@ export default {
       }
       this.$axios({
         method: 'GET',
-        url: 'http://localhost:8080/board/' + this.id,
+        url: this.url + this.id,
         headers
       }).then((response) => {
         this.title = response.data.title
         this.content = response.data.content
         this.thumbnail = response.data.thumbnail
         this.createDate = response.data.createDate
+        this.modify = response.data.modify
         this.$refs.viewer.setContent(this.content)
       })
     },
-    removeBoard: function () {
-      alert('게시글 삭제')
+    async removeBoard () {
+      if (confirm('게시글을 삭제하시겠습니까?')) {
+        await this.$axios.delete(this.url + this.$route.params.id, {
+          headers: {
+            Authorization: 'Bearer ' + localStorage.getItem('token')
+          }
+        })
+          .then((response) => {
+            if (response.data === 'success') {
+              alert('성공적으로 삭제되었습니다.')
+              window.location.href = '/'
+            } else {
+              alert('오류가 발생했습니다.')
+            }
+          })
+          .catch((_error) => {
+            alert('오류가 발생했습니다 : ', _error)
+          })
+      }
     }
   },
   created () {

@@ -13,6 +13,7 @@ Vue.use(VueRouter)
 const requireAuth = () => (from, to, next) => {
   const token = localStorage.getItem('token')
   const role = localStorage.getItem('role')
+
   if (token && role === 'ROLE_ADMIN') {
     return next()
   } else {
@@ -59,6 +60,12 @@ const routes = [
     path: '/edit',
     component: BoardEditView,
     beforeEnter: requireAuth()
+  },
+  {
+    path: '/edit/:id',
+    component: BoardEditView,
+    beforeEnter: requireAuth(),
+    props: true
   },
   {
     path: '/login',

@@ -47,10 +47,25 @@
             <div id="editor" ref="toastEditor" class="toast-editor-backgroud"/>
           </v-col>
         </v-row>
-        <div class="mt-5">
-          <v-btn @click="save" depressed x-large color="primary" class="font-weight-bold">저장하기</v-btn>
-          <v-btn @click="cancel" depressed x-large color="error" class="font-weight-bold">취소하기</v-btn>
-        </div>
+        <v-row>
+          <v-col cols="auto" class="mr-auto">
+            <v-btn @click="save(url)" depressed x-large color="primary" class="font-weight-bold pa-2" v-if="boardId === null">저장</v-btn>
+            <v-btn @click="update(url)" depressed x-large color="primary" class="font-weight-bold pa-2" v-if="boardId !== null">수정</v-btn>
+            <v-btn @click="cancel" depressed x-large color="error" class="font-weight-bold pa-2 ml-2">취소</v-btn>
+          </v-col>
+          <v-col cols="auto">
+
+              <v-switch
+                v-model="isTemporalSave"
+                inset
+                label="임시저장"
+                class="font-weight-bold"
+                @click="startTemporalSave"
+              >
+              </v-switch>
+          </v-col>
+        </v-row>
+
       </v-container>
     </div>
   </v-app>
@@ -64,6 +79,7 @@ export default {
   components: {
     Tagify
   },
+  props: ['id'],
   mounted () {
     this.editor = new Editor({
       el: document.querySelector('#editor'),
@@ -106,18 +122,27 @@ export default {
       }
     },
 
-    save () {
+    startTemporalSave () {
+      if (this.isTemporalSave === true) {
+        const url = 'http://localhost:8080/temporal-board'
+        this.temporalSave = setInterval(() => {
+          this.save(url)
+        }, 5000)
+      } else {
+        clearInterval(this.temporalSave)
+      }
+    },
+
+    destroyed () {
+      clearInterval(this.temporalSave)
+    },
+
+    getRequestData () {
       const content = this.editor.getHTML()
       const title = this.title
       const tags = this.tags
       const categoryId = this.categoryId
       const thumbnail = this.thumbnail
-
-      if (title === null) {
-        alert('제목을 입력해주세요')
-      } else if (categoryId === null) {
-        alert('카테고리를 선택해주세요')
-      }
 
       const requestData = {
         title: title,
@@ -127,13 +152,49 @@ export default {
         tags: tags
       }
 
-      this.$axios.post(this.url, JSON.stringify(requestData), {
+      return requestData
+    },
+
+    save (url) {
+      const requestData = this.getRequestData()
+
+      if (requestData.title === null) {
+        alert('제목을 입력해주세요')
+        return 0
+      } else if (requestData.categoryId === null && url === this.url) {
+        alert('카테고리를 선택해주세요')
+        return 0
+      }
+
+      this.$axios.post(url, JSON.stringify(requestData), {
         headers: {
           'Content-type': 'application/json',
           Authorization: 'Bearer ' + localStorage.getItem('token')
         }
       })
         .then((response) => {
+          if (url === this.url) {
+            this.destroyed()
+            window.location.href = this.redirectUrl + '/board/' + response.data
+          } else {
+            alert('임시저장 되었습니다.', response.data)
+            this.temporalBoardId = response.data
+          }
+        }).catch(error => {
+          alert('에러 발생!!' + error)
+        })
+    },
+
+    update (url) {
+      const requestData = this.getRequestData()
+      this.$axios.patch(url + '/' + this.boardId, JSON.stringify(requestData), {
+        headers: {
+          'Content-type': 'application/json',
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      })
+        .then((response) => {
+          alert('글이 수정되었습니다.')
           window.location.href = this.redirectUrl + '/board/' + response.data
         })
         .catch(error => {
@@ -156,16 +217,32 @@ export default {
         url: this.url + '/edit',
         headers
       }).then((response) => {
-        this.temporalBoard = response.data.temporalBoardResp
+        console.log(response.data)
+        this.temporalBoard = response.data.boardResponse
         if (this.temporalBoard !== null) {
-          alert('임시저장글이있다. 체크 화면')
+          console.log(this.temporalBoard)
         } else {
           this.categoryList = response.data.categoryList
-          console.log(this.categoryList)
         }
       }).catch((Error) => {
         alert('접근 궈한이 없습니다.')
         history.back()
+      })
+    },
+
+    async getBoardDetailEditInfo () {
+      this.$axios.get(this.url + '/edit/' + this.boardId, {
+        headers: {
+          Authorization: 'Bearer ' + localStorage.getItem('token')
+        }
+      }).then((response) => {
+        this.categoryList = response.data.categoryList
+        const board = response.data.boardResponse
+        this.title = board.title
+        this.tags = board.tags
+        this.thumbnail = board.thumbnail
+        this.categoryId = board.categoryId
+        this.editor.setHTML(board.content)
       })
     },
 
@@ -183,6 +260,8 @@ export default {
   },
   data: () => ({
     editor: null,
+    isTemporalSave: false,
+    // temporalSaveComment: this.isTemporalSave === true ? 'ON' : 'OFF',
     titleRules: [
       value => !!value || '제목을 입력해주세요.'
     ],
@@ -191,7 +270,7 @@ export default {
     ],
     tags: [],
     categoryList: null,
-    temporalBoard: null,
+    temporalBoardId: null,
     title: null,
     categoryId: null,
     thumbnail: null,
@@ -206,10 +285,17 @@ export default {
           this.addImageBlobHook(blob, callback)
         }
       }
-    }
+    },
+    boardId: null
   }),
   created () {
-    this.getBoardEditViewInfo()
+    const boardId = this.$route.params.id
+    if (typeof boardId === 'undefined') {
+      this.getBoardEditViewInfo()
+    } else {
+      this.boardId = boardId
+      this.getBoardDetailEditInfo()
+    }
   }
 }
 </script>
