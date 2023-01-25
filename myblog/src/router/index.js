@@ -7,6 +7,7 @@ import TotalView from '../views/board/TotalView.vue'
 import BoardEditView from '../views/board/BoardEditView.vue'
 import BoardSearchView from '../views/board/BoardSearchView.vue'
 import SocialLogin from '../views/login/SocialLogin.vue'
+import CategoryEdit from '../views/category/CategoryEditView.vue'
 
 Vue.use(VueRouter)
 
@@ -53,6 +54,11 @@ const routes = [
         name: 'BoardDetailView',
         component: BoardDetailView,
         props: true
+      },
+      {
+        path: '/category',
+        component: CategoryEdit,
+        beforeEnter: requireAuth()
       }
     ]
   },

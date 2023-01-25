@@ -32,7 +32,7 @@
                 <v-list-item-title>
                   <span class="font-weight-bold">{{ comment.userName }}</span>.
                   <span class="caption">{{ comment.createDate }}</span>
-                  <v-dialog v-model="dialog" width="600">
+                  <v-dialog v-model="dialog" width="600" persistent :retain-focus="false">
                     <template v-slot:activator="{ on, attrs }">
                       <a class="caption" v-bind="attrs" v-on="on" @click="setParentId(comment.commentId)">.답글쓰기</a>
                     </template>
@@ -44,16 +44,21 @@
                       <v-card-text>
                         <v-row align-center>
                         <v-col cols="12">
-                          <v-textarea outlined label="답글 작성" rows=2 v-model="childComment" :disabled="isdisabled"/>
-                        </v-col>
-                      </v-row>
-                      <v-divider />
-                      <v-row align-end class="mt-1">
-                        <v-col cols="3">
-                          <v-btn color="primary" small @click="save()" :disabled="isdisabled">등록</v-btn>
+                          <v-textarea outlined label="답글 작성" rows=4 v-model="childComment" :disabled="isdisabled"/>
                         </v-col>
                       </v-row>
                       </v-card-text>
+                      <v-card-actions>
+                        <v-btn color="primary" @click="save(null)" :disabled="isdisabled">등록</v-btn>
+                        <v-spacer></v-spacer>
+                        <v-btn
+                          color="primary"
+                          text
+                          @click="dialog = false"
+                        >
+                          Close
+                        </v-btn>
+                      </v-card-actions>
                     </v-card>
                   </v-dialog>
 
@@ -71,7 +76,7 @@
                 <v-list-item-title>
                   <span class="font-weight-bold">{{ child.userName }}</span>.
                   <span class="caption">{{ child.createDate }}</span>
-                  <a class="caption red--text" v-if="comment.remove" @click="remove(child.commentId)">.삭제</a>
+                  <a class="caption red--text" v-if="child.remove" @click="remove(child.commentId)">.삭제</a>
                 </v-list-item-title>
                 <v-list-item-subtitle>{{ child.content }}</v-list-item-subtitle>
               </v-list-item-content>
@@ -101,7 +106,8 @@ export default {
     }
   },
   methods: {
-    async save () {
+    async save (parentId) {
+      this.dialog = false
       if (this.comment !== '' || this.childComment !== '') {
         const comment = (this.comment !== '') ? this.comment : this.childComment
         const requestData = {
@@ -120,6 +126,7 @@ export default {
             this.total = response.data.total
             this.comment = ''
             this.childComment = ''
+            this.parentId = null
           })
           .catch((_error) => {
             alert('오류가 발생했습니다.')
@@ -159,7 +166,7 @@ export default {
           alert('오류가 발생했습니다.')
         })
     },
-    async setParentId (parentId) {
+    setParentId (parentId) {
       this.parentId = parentId
     }
   },

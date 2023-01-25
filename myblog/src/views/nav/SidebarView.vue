@@ -20,13 +20,15 @@
             v-model="searchKeyword"
             @keyup.enter="search"
           ></v-text-field>
-
     <v-divider />
 
-    <v-container>
+    <v-container v-if="checkAuthorization()">
       <v-row justify="center">
         <v-col align-self="center" cols="10">
-          카테고리 수정
+          <router-link to="/category">
+            <v-icon>mdi-pencil</v-icon>
+            <span class="font-weight-bold" style="color: black">카테고리 수정</span>
+          </router-link>
         </v-col>
       </v-row>
     </v-container>
@@ -89,6 +91,16 @@ export default {
         const link = this.searchLink + this.searchKeyword
         this.searchKeyword = ''
         this.$router.push(link)
+      }
+    },
+
+    checkAuthorization () {
+      const token = localStorage.getItem('token')
+      const role = localStorage.getItem('role')
+      if (token && role === 'ROLE_ADMIN') {
+        return true
+      } else {
+        return false
       }
     }
   },
