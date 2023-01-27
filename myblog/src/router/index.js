@@ -8,6 +8,7 @@ import BoardEditView from '../views/board/BoardEditView.vue'
 import BoardSearchView from '../views/board/BoardSearchView.vue'
 import SocialLogin from '../views/login/SocialLogin.vue'
 import CategoryEdit from '../views/category/CategoryEditView.vue'
+import BoardTagView from '../views/board/BoardTagView.vue'
 
 Vue.use(VueRouter)
 
@@ -48,6 +49,11 @@ const routes = [
       {
         path: 'board/search/',
         component: BoardSearchView
+      },
+      {
+        path: 'board/tag',
+        component: BoardTagView,
+        props: true
       },
       {
         path: 'board/:id',

@@ -66,7 +66,7 @@
                               </v-card-actions>
                             </v-card>
                           </v-dialog>
-                          <a v-if="category.categoryNum === 0" @click="removeCategory(category.id)">
+                          <a v-if="category.categoryNum === 0 && category.childCategory.length === 0" @click="removeCategory(category.id)">
                             <v-icon>mdi-delete</v-icon>
                           </a>
                         </v-list-item-title>
@@ -74,9 +74,9 @@
                         <v-list-item-subtitle v-for="child, idx in category.childCategory" :key="idx" class="text-h6 ml-3">
                           <span>
                             - {{ child.name }}
-                          <a v-if="child.categoryNum === 0" @click="removeCategory(child.id)">
+                          <v-btn icon v-if="child.categoryNum === 0" @click="removeCategory(child.id)">
                             <v-icon>mdi-delete</v-icon>
-                          </a>
+                          </v-btn>
                           </span>
                         </v-list-item-subtitle>
                       </v-list-item-content>

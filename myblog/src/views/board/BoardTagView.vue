@@ -1,6 +1,6 @@
 <template>
   <v-container>
-    <p class="text-h5 font-weight-bold">{{ query }} 검색결과</p>
+    <p class="text-h5 font-weight-bold">{{ tag }} 결과</p>
     <v-hover v-slot="{ hover }" v-for="(board, i) in boards"
       :key="i">
       <router-link :to="'/board/' + board.id">
@@ -47,8 +47,8 @@
 export default {
   data () {
     return {
-      url: 'http://localhost:8080/board/search?query=',
-      query: '',
+      url: 'http://localhost:8080/board/tag?page=',
+      tag: '',
       page: '',
       boards: [],
       pageInfo: null,
@@ -57,10 +57,10 @@ export default {
     }
   },
   methods: {
-    getsearchBoard () {
-      this.query = this.$route.query.query
+    getTagBoard () {
+      this.tag = this.$route.query.tag
       console.log(this.currentPage)
-      this.$axios.get(this.url + this.query + '&search=' + this.$route.query.search + '&page=' + this.currentPage)
+      this.$axios.get(this.url + this.currentPage + '&tag=' + this.tag)
         .then((response) => {
           this.boards = response.data.boards
           this.pageInfo = response.data.pageInfo
@@ -69,23 +69,23 @@ export default {
     },
     pageChanged (newPage) {
       this.currentPage = newPage
-      this.getsearchBoard()
+      this.getTagBoard()
     }
   },
   created () {
-    this.getsearchBoard()
+    this.getTagBoard()
     this.$watch(
-      () => this.$route.query.query,
+      () => this.$route.query.tag,
       (toParams, previousParams) => {
-        console.log('getsearchBoard')
+        console.log('getTagBoard')
         this.currentPage = 1
-        this.getsearchBoard()
+        this.getTagBoard()
       }
     )
   }
 
 }
 </script>
-<style lang="">
+<style>
 
 </style>
