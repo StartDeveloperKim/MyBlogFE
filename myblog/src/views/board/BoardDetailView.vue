@@ -5,9 +5,9 @@
         <v-card-title class="white--text mt-10 text-h4 font-weight-bold">{{ title }}</v-card-title>
         <v-card-subtitle class="white--text mt-1">
           {{ createDate }}.
-          <!-- 나중에 권한에 따른 수정 및 삭제 여부를 구현하자. -->
           <router-link :to="'/edit/'+this.$route.params.id" class="white--text" v-if="this.modify">수정. </router-link>
           <a @click="removeBoard" class="white--text" v-if="this.modify">삭제</a>
+          <HeartView />
         </v-card-subtitle>
       </v-img>
       <v-card-text>
@@ -21,11 +21,12 @@
 <script>
 import Viewer from '../toast/ToastViewer.vue'
 import CommentView from '../comment/CommentView.vue'
+import HeartView from '../heart/HeartView.vue'
 
 export default {
   name: 'BoardDetailView',
   props: ['id'],
-  components: { Viewer, CommentView },
+  components: { Viewer, CommentView, HeartView },
   data () {
     return {
       title: '',
@@ -56,6 +57,7 @@ export default {
         this.$refs.viewer.setContent(this.content)
       })
     },
+
     async removeBoard () {
       if (confirm('게시글을 삭제하시겠습니까?')) {
         await this.$axios.delete(this.url + this.$route.params.id, {

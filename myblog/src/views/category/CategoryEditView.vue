@@ -66,6 +66,7 @@
                               </v-card-actions>
                             </v-card>
                           </v-dialog>
+
                           <a v-if="category.categoryNum === 0 && category.childCategory.length === 0" @click="removeCategory(category.id)">
                             <v-icon>mdi-delete</v-icon>
                           </a>
